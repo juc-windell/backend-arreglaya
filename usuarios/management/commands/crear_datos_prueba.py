@@ -1,0 +1,38 @@
+import os
+from django.core.management.base import BaseCommand
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
+from rest_framework.authtoken.models import Token
+
+#=========================================================================================
+class Command(BaseCommand):
+    help = 'Crea los grupos, los usuarios de prueba y datos ficticios'
+
+    def handle(self, *args, **options):
+        clave = os.getenv('PASSWORD_USUARIOS_PRUEBA')
+        if not clave:
+            self.stdout.write('Falta PASSWORD_USUARIOS_PRUEBA en el archivo .env')
+            return
+
+        # Grupos y usuarios de prueba con su token
+        Usuario = get_user_model()
+        usuarios = [
+            ('admin1', 'Administrador'),
+            ('operador1', 'Operador'),
+            ('consulta1', 'Consulta'),
+        ]
+
+        for username, nombre_grupo in usuarios:
+            grupo, creado = Group.objects.get_or_create(name=nombre_grupo)
+
+            usuario, creado = Usuario.objects.get_or_create(username=username)
+            usuario.set_password(clave)
+            usuario.save()
+            usuario.groups.add(grupo)
+
+            token, creado = Token.objects.get_or_create(user=usuario)
+            self.stdout.write(
+                username + ' (' + nombre_grupo + ') token: ' + token.key
+            )
+
+        self.stdout.write('Datos de prueba creados correctamente')
