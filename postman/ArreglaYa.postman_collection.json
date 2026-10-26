@@ -1,0 +1,1448 @@
+{
+  "info": {
+    "name": "ArreglaYa API",
+    "description": "Coleccion de la API de ArreglaYa. Ejecutar primero 'python manage.py crear_datos_prueba' y poner en la variable password_prueba la misma clave de PASSWORD_USUARIOS_PRUEBA del archivo .env.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Autenticacion",
+      "item": [
+        {
+          "name": "Obtener token admin1 (200)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/token/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "token",
+                ""
+              ]
+            },
+            "description": "Devuelve el token de admin1. Lo guarda en la variable token_admin.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin1\",\n  \"password\": \"{{password_prueba}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('token_admin', pm.response.json().token);",
+                  "}",
+                  "pm.test('Responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Obtener token operador1 (200)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/token/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "token",
+                ""
+              ]
+            },
+            "description": "Devuelve el token de operador1. Lo guarda en la variable token_operador.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"operador1\",\n  \"password\": \"{{password_prueba}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('token_operador', pm.response.json().token);",
+                  "}",
+                  "pm.test('Responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Obtener token consulta1 (200)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/token/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "token",
+                ""
+              ]
+            },
+            "description": "Devuelve el token de consulta1. Lo guarda en la variable token_consulta.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"consulta1\",\n  \"password\": \"{{password_prueba}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('token_consulta', pm.response.json().token);",
+                  "}",
+                  "pm.test('Responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Perfil del usuario (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/perfil/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "perfil",
+                ""
+              ]
+            },
+            "description": "Respuesta esperada 200: id, username, email y grupos del usuario del token."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Token con clave incorrecta (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/token/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "token",
+                ""
+              ]
+            },
+            "description": "Respuesta esperada 400: no puede iniciar sesion con las credenciales.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin1\",\n  \"password\": \"incorrecta\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Edificios",
+      "item": [
+        {
+          "name": "Listar edificios (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_consulta}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/edificios/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "edificios",
+                ""
+              ]
+            },
+            "description": "Cualquier perfil autenticado puede listar. Esperado 200 con la lista."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar edificios sin token (401)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/edificios/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "edificios",
+                ""
+              ]
+            },
+            "description": "Sin encabezado Authorization. Esperado 401."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 401', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear edificio (201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/edificios/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "edificios",
+                ""
+              ]
+            },
+            "description": "Solo Administrador. Esperado 201 con el edificio creado. Guarda el id en edificio_id.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Edificio Prueba Postman\",\n  \"codigo\": \"EP\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('edificio_id', pm.response.json().id);",
+                  "}",
+                  "pm.test('Responde 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear edificio con nombre repetido (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/edificios/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "edificios",
+                ""
+              ]
+            },
+            "description": "El nombre del edificio es unico. Esperado 400 con error en 'nombre'.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Edificio Prueba Postman\",\n  \"codigo\": \"EP\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear edificio con perfil Consulta (403)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_consulta}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/edificios/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "edificios",
+                ""
+              ]
+            },
+            "description": "Consulta solo puede usar GET. Esperado 403.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Edificio Z\",\n  \"codigo\": \"EZ\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 403', function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ver edificio (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/edificios/{{edificio_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "edificios",
+                "{{edificio_id}}",
+                ""
+              ]
+            },
+            "description": "Esperado 200 con el edificio."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ver edificio que no existe (404)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/edificios/99999/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "edificios",
+                "99999",
+                ""
+              ]
+            },
+            "description": "Esperado 404: Edificio no encontrado."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar edificio con PUT (200)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/edificios/{{edificio_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "edificios",
+                "{{edificio_id}}",
+                ""
+              ]
+            },
+            "description": "Esperado 200 con los datos actualizados.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Edificio Prueba Postman\",\n  \"codigo\": \"EPP\",\n  \"activo\": true\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar edificio con PATCH (200)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/edificios/{{edificio_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "edificios",
+                "{{edificio_id}}",
+                ""
+              ]
+            },
+            "description": "Esperado 200, solo cambia 'activo'.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"activo\": false\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3. Espacios",
+      "item": [
+        {
+          "name": "Crear espacio (201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/espacios/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "espacios",
+                ""
+              ]
+            },
+            "description": "Esperado 201. Guarda el id en espacio_id.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"edificio\": \"{{edificio_id}}\",\n  \"nombre\": \"Aula Postman\",\n  \"tipo\": \"AULA\",\n  \"piso\": 1\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('espacio_id', pm.response.json().id);",
+                  "}",
+                  "pm.test('Responde 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear espacio repetido en el mismo edificio (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/espacios/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "espacios",
+                ""
+              ]
+            },
+            "description": "UniqueConstraint(edificio, nombre). Esperado 400.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"edificio\": \"{{edificio_id}}\",\n  \"nombre\": \"Aula Postman\",\n  \"tipo\": \"AULA\",\n  \"piso\": 1\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar espacios (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_operador}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/espacios/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "espacios",
+                ""
+              ]
+            },
+            "description": "Esperado 200 con la lista."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar espacio con PATCH (200)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/espacios/{{espacio_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "espacios",
+                "{{espacio_id}}",
+                ""
+              ]
+            },
+            "description": "Esperado 200.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"piso\": 2\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH con piso negativo (400)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/espacios/{{espacio_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "espacios",
+                "{{espacio_id}}",
+                ""
+              ]
+            },
+            "description": "La validacion tambien se aplica en PATCH. Esperado 400.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"piso\": -1\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Eliminar edificio con espacios (409)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/edificios/{{edificio_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "edificios",
+                "{{edificio_id}}",
+                ""
+              ]
+            },
+            "description": "Regla 9 (PROTECT). Esperado 409."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 409', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Eliminar espacio con perfil Operador (403)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_operador}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/espacios/{{espacio_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "espacios",
+                "{{espacio_id}}",
+                ""
+              ]
+            },
+            "description": "Solo Administrador elimina. Esperado 403."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 403', function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Eliminar espacio (204)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/espacios/{{espacio_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "espacios",
+                "{{espacio_id}}",
+                ""
+              ]
+            },
+            "description": "Esperado 204 sin contenido."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 204', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Eliminar edificio sin espacios (204)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/edificios/{{edificio_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "edificios",
+                "{{edificio_id}}",
+                ""
+              ]
+            },
+            "description": "Ya no tiene espacios. Esperado 204."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 204', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. Tecnicos",
+      "item": [
+        {
+          "name": "Listar tecnicos (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_consulta}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tecnicos/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tecnicos",
+                ""
+              ]
+            },
+            "description": "Esperado 200 con la lista."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear tecnico (201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tecnicos/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tecnicos",
+                ""
+              ]
+            },
+            "description": "Esperado 201. Guarda el id en tecnico_id.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Tecnico Postman\",\n  \"identificacion\": \"909990999\",\n  \"especialidad\": \"GENERAL\",\n  \"telefono\": \"88889999\",\n  \"max_ordenes_abiertas\": 2\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('tecnico_id', pm.response.json().id);",
+                  "}",
+                  "pm.test('Responde 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear tecnico con identificacion repetida (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tecnicos/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tecnicos",
+                ""
+              ]
+            },
+            "description": "La identificacion es unica. Esperado 400.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Otro Tecnico\",\n  \"identificacion\": \"909990999\",\n  \"especialidad\": \"AIRES\",\n  \"telefono\": \"88880000\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear tecnico con datos invalidos (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tecnicos/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tecnicos",
+                ""
+              ]
+            },
+            "description": "Esperado 400 con errores en nombre, identificacion, especialidad y telefono.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Al\",\n  \"identificacion\": \"12a\",\n  \"especialidad\": \"PINTURA\",\n  \"telefono\": \"123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ver tecnico (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_operador}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tecnicos/{{tecnico_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tecnicos",
+                "{{tecnico_id}}",
+                ""
+              ]
+            },
+            "description": "Esperado 200."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH max_ordenes_abiertas en 0 (400)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tecnicos/{{tecnico_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tecnicos",
+                "{{tecnico_id}}",
+                ""
+              ]
+            },
+            "description": "Debe ser al menos 1. Esperado 400.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"max_ordenes_abiertas\": 0\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar tecnico con PUT (200)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tecnicos/{{tecnico_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tecnicos",
+                "{{tecnico_id}}",
+                ""
+              ]
+            },
+            "description": "Esperado 200.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Tecnico Postman\",\n  \"identificacion\": \"909990999\",\n  \"especialidad\": \"ELECTRICIDAD\",\n  \"telefono\": \"88889999\",\n  \"activo\": true,\n  \"max_ordenes_abiertas\": 3\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear tecnico con perfil Operador (403)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_operador}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tecnicos/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tecnicos",
+                ""
+              ]
+            },
+            "description": "Solo Administrador crea tecnicos. Esperado 403.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"No Permitido\",\n  \"identificacion\": \"111111111\",\n  \"especialidad\": \"GENERAL\",\n  \"telefono\": \"88880001\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 403', function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Eliminar tecnico (204)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tecnicos/{{tecnico_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tecnicos",
+                "{{tecnico_id}}",
+                ""
+              ]
+            },
+            "description": "Esperado 204."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 204', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ver tecnico eliminado (404)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_admin}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tecnicos/{{tecnico_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tecnicos",
+                "{{tecnico_id}}",
+                ""
+              ]
+            },
+            "description": "Esperado 404."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "password_prueba",
+      "value": "escriba-aqui-la-clave-de-prueba"
+    },
+    {
+      "key": "token_admin",
+      "value": ""
+    },
+    {
+      "key": "token_operador",
+      "value": ""
+    },
+    {
+      "key": "token_consulta",
+      "value": ""
+    },
+    {
+      "key": "edificio_id",
+      "value": ""
+    },
+    {
+      "key": "espacio_id",
+      "value": ""
+    },
+    {
+      "key": "tecnico_id",
+      "value": ""
+    }
+  ]
+}
