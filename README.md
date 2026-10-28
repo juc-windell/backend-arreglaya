@@ -3,6 +3,10 @@
 API REST hecha con Django y Django REST Framework para ordenar el mantenimiento de una sede universitaria. Una falla se reporta, se asigna a un técnico, se atiende con una orden de trabajo y se cierra descontando los materiales usados del inventario.
 
 Módulos: **Espacios**, **Técnicos**, **Solicitudes**, **Órdenes de trabajo** y **Materiales**. Además: usuarios, perfiles (grupos) y autenticación por token.
+## Miembros del proyecto
+- Windell Urróz Cortes
+- Enzo Bejarano Mejías
+- David Chang Castañeda
 
 ## Requisitos
 

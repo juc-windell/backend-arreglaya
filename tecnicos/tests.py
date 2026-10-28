@@ -91,3 +91,43 @@ class TecnicosAPITest(APITestCase):
         url = reverse('detalle_tecnico', args=[self.tecnico.id])
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+#====================================================================================
+    # Filtro por especialidad (no distingue mayusculas)
+    def test_filtro_por_especialidad(self):
+        Tecnico.objects.create(
+            nombre='Luis Rojas', identificacion='202220222',
+            especialidad='PLOMERIA', telefono='88882222')
+        self.client.force_authenticate(user=self.operador)
+        response = self.client.get(reverse('api_tecnicos'), {'especialidad': 'plomeria'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['especialidad'], 'PLOMERIA')
+
+#====================================================================================
+    # Filtro por activo, y 400 si el valor no es true o false
+    def test_filtro_por_activo(self):
+        Tecnico.objects.create(
+            nombre='Pedro Solano', identificacion='404440444',
+            especialidad='GENERAL', telefono='88884444', activo=False)
+        self.client.force_authenticate(user=self.operador)
+
+        response = self.client.get(reverse('api_tecnicos'), {'activo': 'false'})
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['nombre'], 'Pedro Solano')
+
+        response = self.client.get(reverse('api_tecnicos'), {'activo': 'talvez'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+#====================================================================================
+    # Regla 1: el tecnico debe estar activo y tener la especialidad (o ser GENERAL)
+    def test_puede_atender(self):
+        self.assertTrue(self.tecnico.puede_atender('ELECTRICIDAD'))
+        self.assertFalse(self.tecnico.puede_atender('PLOMERIA'))
+
+        general = Tecnico.objects.create(
+            nombre='Pedro Solano', identificacion='404440444',
+            especialidad='GENERAL', telefono='88884444')
+        self.assertTrue(general.puede_atender('AIRES'))
+
+        general.activo = False
+        self.assertFalse(general.puede_atender('AIRES'))
