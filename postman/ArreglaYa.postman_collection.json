@@ -1020,6 +1020,206 @@
           ]
         },
         {
+          "name": "Filtrar tecnicos por especialidad (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_consulta}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tecnicos/?especialidad=PLOMERIA",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tecnicos",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "especialidad",
+                  "value": "PLOMERIA"
+                }
+              ]
+            },
+            "description": "Esperado 200 con solo los tecnicos de la especialidad indicada."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Filtrar tecnicos por activo (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_consulta}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tecnicos/?activo=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tecnicos",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "activo",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Esperado 200 con solo los tecnicos activos."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Filtrar tecnicos con activo invalido (400)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_consulta}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tecnicos/?activo=talvez",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tecnicos",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "activo",
+                  "value": "talvez"
+                }
+              ]
+            },
+            "description": "Esperado 400 porque activo solo acepta true o false."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Reporte tiempo promedio por tecnico (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_consulta}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/reportes/tiempo-por-tecnico/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reportes",
+                "tiempo-por-tecnico",
+                ""
+              ]
+            },
+            "description": "Esperado 200 con la lista de tecnicos y los dias promedio de sus ordenes FINALIZADAS. Funciona cuando exista el modelo Orden (persona B)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Reporte tiempo promedio por tecnico sin token (401)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/reportes/tiempo-por-tecnico/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reportes",
+                "tiempo-por-tecnico",
+                ""
+              ]
+            },
+            "description": "Esperado 401 porque el reporte requiere token."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 401', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
           "name": "Crear tecnico (201)",
           "request": {
             "method": "POST",
