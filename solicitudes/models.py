@@ -3,17 +3,6 @@ from django.db import models
 from espacios.models import Espacio
 from tecnicos.models import Tecnico
 
-#===========================================================================================
-# Modelo de la persona C que usa la persona B para crear las ordenes de trabajo.
-#
-# Lo que B necesita saber:
-#  - En Orden el campo debe ser: solicitud = models.OneToOneField('solicitudes.Solicitud',
-#    on_delete=models.PROTECT, related_name='orden'). El related_name='orden' lo usa la
-#    regla 8 (la solicitud solo pasa a RESUELTA si su orden esta FINALIZADA).
-#  - Al crear una orden, B llama solicitud.cambiar_estado('ASIGNADA').
-#    Al pasar la orden a EN_PROCESO, llama solicitud.cambiar_estado('EN_PROCESO').
-#  - Antes de crear la orden, B revisa solicitud.puede_recibir_orden() (regla 3)
-#    y tecnico.puede_atender(solicitud.categoria) (regla 1, metodo de Tecnico).
 class Solicitud(models.Model):
     # La categoria usa la misma lista que la especialidad del tecnico
     CATEGORIAS = Tecnico.ESPECIALIDADES
