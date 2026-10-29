@@ -22,12 +22,24 @@ class Conflicto(Exception):
 
 class OrdenViewSet(viewsets.ModelViewSet):
 
-    queryset = Orden.objects.select_related(
-        "solicitud", "tecnico"
-    ).all().order_by("id")
-
     serializer_class = OrdenSerializer
     permission_classes = [OperadorGestiona]
+
+    # Filtros: ?estado=EN_PROCESO y ?tecnico=1
+    def get_queryset(self):
+        ordenes = Orden.objects.select_related(
+            "solicitud", "tecnico"
+        ).order_by("id")
+
+        estado = self.request.query_params.get("estado")
+        if estado:
+            ordenes = ordenes.filter(estado=estado.upper())
+
+        tecnico = self.request.query_params.get("tecnico")
+        if tecnico and tecnico.isdigit():
+            ordenes = ordenes.filter(tecnico_id=tecnico)
+
+        return ordenes 
 
     # Crear orden: reglas 1, 2 y 3
     def create(self, request, *args, **kwargs):
@@ -145,6 +157,17 @@ class OrdenViewSet(viewsets.ModelViewSet):
                         "La orden debe estar EN_PROCESO antes de finalizar."
                     )
 
+                # Si la solicitud ya no se puede resolver (por ejemplo, fue
+                # cancelada), no se finaliza la orden
+                if (
+                    nuevo_estado == "FINALIZADA"
+                    and orden.estado != "FINALIZADA"
+                    and not orden.solicitud.puede_pasar_a("RESUELTA")
+                ):
+                    raise Conflicto(
+                        "La solicitud no se puede resolver en su estado actual."
+                    )
+                    
                 for field, value in data.items():
                     setattr(orden, field, value)
 
@@ -307,9 +330,17 @@ class OrdenViewSet(viewsets.ModelViewSet):
             .order_by("estado")
         )
 
+        # Consulta 4: materiales por debajo del stock minimo
+        bajo_stock = list(
+            Material.objects.filter(
+                stock_actual__lt=F("stock_minimo")
+            ).values("id", "codigo", "nombre", "stock_actual", "stock_minimo")
+        )
+
         return Response({
             "carga_tecnicos": carga,
             "consumo_materiales": consumo,
-            "ordenes_por_estado": estados
+            "ordenes_por_estado": estados,
+            "bajo_stock": bajo_stock
         })
 
