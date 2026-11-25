@@ -119,3 +119,36 @@ class EspaciosAPITest(APITestCase):
         url = reverse('detalle_edificio', args=[9999])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+#==============================================================================================
+# Proyecto 2: filtros de espacios y nombre del edificio
+class EspaciosFiltrosAPITest(APITestCase):
+    def setUp(self):
+        Usuario = get_user_model()
+        self.usuario = Usuario.objects.create_user(
+            username='consulta_filtros', password='ClaveSegura123!')
+        self.client.force_authenticate(user=self.usuario)
+
+        self.edificio_a = Edificio.objects.create(nombre='Edificio A', codigo='EA')
+        self.edificio_b = Edificio.objects.create(nombre='Edificio B', codigo='EB')
+        Espacio.objects.create(edificio=self.edificio_a, nombre='Aula 101', tipo='AULA', piso=1)
+        Espacio.objects.create(edificio=self.edificio_a, nombre='Lab 1', tipo='LABORATORIO', piso=2)
+        Espacio.objects.create(edificio=self.edificio_b, nombre='Aula 201', tipo='AULA', piso=2)
+
+    # ?edificio= y ?tipo= se combinan
+    def test_filtros_combinados(self):
+        response = self.client.get(
+            reverse('api_espacios'),
+            {'edificio': self.edificio_a.id, 'tipo': 'aula'}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['nombre'], 'Aula 101')
+        self.assertEqual(response.data[0]['edificio_nombre'], 'Edificio A')
+
+    # Un edificio no numerico o un tipo inexistente responden 400
+    def test_filtros_invalidos(self):
+        response = self.client.get(reverse('api_espacios'), {'edificio': 'abc'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        response = self.client.get(reverse('api_espacios'), {'tipo': 'COCINA'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

@@ -21,7 +21,8 @@ Todas las rutas terminan en `/`. Todas, menos `/api/token/`, requieren el header
 | Método | Ruta | Descripción | Acceso | Códigos |
 |---|---|---|---|---|
 | POST | /api/token/ | Obtener token con `username` y `password` | Público | 200 / 400 |
-| GET | /api/perfil/ | Usuario del token y sus grupos | Autenticado | 200 / 401 |
+| GET | /api/perfil/ | Usuario del token, sus grupos e `is_superuser` | Autenticado | 200 / 401 |
+| POST | /api/logout/ | Revoca (borra) el token del usuario | Autenticado | 204 / 401 |
 
 ## Edificios y espacios
 
@@ -32,7 +33,7 @@ Todas las rutas terminan en `/`. Todas, menos `/api/token/`, requieren el header
 | GET | /api/edificios/{id}/ | Detalle | Autenticado | 200 / 401 / 404 |
 | PUT, PATCH | /api/edificios/{id}/ | Actualizar | Administrador | 200 / 400 / 401 / 403 / 404 |
 | DELETE | /api/edificios/{id}/ | Eliminar (409 si tiene espacios) | Administrador | 204 / 401 / 403 / 404 / 409 |
-| GET | /api/espacios/ | Lista | Autenticado | 200 / 401 |
+| GET | /api/espacios/ | Lista. Filtros: `?edificio=<id>`, `?tipo=` (incluye `edificio_nombre`) | Autenticado | 200 / 400 / 401 |
 | POST | /api/espacios/ | Crear | Administrador | 201 / 400 / 401 / 403 |
 | GET | /api/espacios/{id}/ | Detalle | Autenticado | 200 / 401 / 404 |
 | PUT, PATCH | /api/espacios/{id}/ | Actualizar | Administrador | 200 / 400 / 401 / 403 / 404 |

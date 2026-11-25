@@ -40,3 +40,35 @@ class TokenYPerfilAPITest(APITestCase):
             response.status_code,
             status.HTTP_401_UNAUTHORIZED
         )
+#=========================================================================================
+# Proyecto 2: logout con revocacion del token
+class LogoutAPITest(APITestCase):
+    def setUp(self):
+        Usuario = get_user_model()
+        self.usuario = Usuario.objects.create_user(
+            username='beto',
+            password='ClaveSegura123!'
+        )
+        self.token = Token.objects.create(user=self.usuario)
+
+    # El perfil informa si el usuario es superusuario
+    def test_perfil_incluye_is_superuser(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        response = self.client.get(reverse('api_perfil'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(response.data['is_superuser'])
+
+    # Logout borra el token y luego ese token responde 401
+    def test_logout_revoca_token(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        response = self.client.post(reverse('api_logout'))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Token.objects.filter(key=self.token.key).exists())
+
+        response = self.client.get(reverse('api_perfil'))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    # Logout sin token responde 401
+    def test_logout_sin_token(self):
+        response = self.client.post(reverse('api_logout'))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

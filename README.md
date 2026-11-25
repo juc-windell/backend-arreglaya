@@ -70,10 +70,11 @@ El detalle de cada endpoint (acceso, filtros y códigos de respuesta) está en [
 | Método | Ruta | Descripción |
 |---|---|---|
 | POST | /api/token/ | Obtener token |
-| GET | /api/perfil/ | Datos y grupos del usuario del token |
+| GET | /api/perfil/ | Datos, grupos e `is_superuser` del usuario del token |
+| POST | /api/logout/ | Cierra sesión y revoca (borra) el token — Proyecto 2 |
 | GET, POST | /api/edificios/ | Listar / crear edificios |
 | GET, PUT, PATCH, DELETE | /api/edificios/{id}/ | Ver / actualizar / eliminar edificio |
-| GET, POST | /api/espacios/ | Listar / crear espacios |
+| GET, POST | /api/espacios/ | Listar (filtros `edificio`, `tipo`) / crear espacios |
 | GET, PUT, PATCH, DELETE | /api/espacios/{id}/ | Ver / actualizar / eliminar espacio |
 | GET, POST | /api/tecnicos/ | Listar (filtros `especialidad`, `activo`) / crear técnicos |
 | GET, PUT, PATCH, DELETE | /api/tecnicos/{id}/ | Ver / actualizar / eliminar técnico |
@@ -92,6 +93,7 @@ El detalle de cada endpoint (acceso, filtros y códigos de respuesta) está en [
 
 - Los listados de solicitudes, órdenes y materiales están paginados: devuelven `count`, `next`, `previous` y `results`, con 5 registros por página, y se navegan con `?page=2`. Una página que no existe responde **404**.
 - Solicitudes: `?estado=`, `?prioridad=`, `?categoria=`, `?espacio=` y `?ordering=fecha_reporte|-fecha_reporte|prioridad|-prioridad`.
+- Espacios: `?edificio=<id>` y `?tipo=AULA|LABORATORIO|OFICINA|BAÑO|EXTERIOR` (combinables).
 - Órdenes: `?estado=` y `?tecnico=`. Materiales: `?activo=true|false` y `?search=`. Técnicos: `?especialidad=` y `?activo=`.
 - Un valor inválido en `activo`, `espacio` u `ordering` responde **400**.
 - El tamaño de página se cambia en `PAGE_SIZE` de `settings.py`.
@@ -113,6 +115,16 @@ El detalle de cada endpoint (acceso, filtros y códigos de respuesta) está en [
 Las órdenes de trabajo no se eliminan: `DELETE /api/ordenes/{id}/` responde **409** porque se conservan como historial.
 
 Sin token: **401**. Con token pero sin permiso: **403**.
+
+## CORS (Proyecto 2)
+
+El frontend React corre en `http://localhost:5173`. Django lo autoriza con **django-cors-headers**; los orígenes permitidos se configuran en el `.env`:
+
+```
+CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+```
+
+Las ampliaciones hechas para el frontend están en [`docs/extensiones_proyecto2.md`](docs/extensiones_proyecto2.md).
 
 ## Postman
 

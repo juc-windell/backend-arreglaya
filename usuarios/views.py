@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import (api_view, authentication_classes, permission_classes,)
@@ -5,6 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 
 #===========================================================================
 # Devuelve los datos del usuario que envia el token y sus grupos
+# Proyecto 2: se agrega is_superuser para que el frontend trate al
+# superusuario como Administrador (igual que es_administrador en permisos.py)
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -18,4 +21,16 @@ def perfil(request):
         "username": request.user.username,
         "email": request.user.email,
         "grupos": grupos,
+        "is_superuser": request.user.is_superuser,
     })
+
+#===========================================================================
+# Proyecto 2: cierre de sesion con revocacion del token en el servidor.
+# Borra el token del usuario; desde ese momento cualquier solicitud con ese
+# token responde 401. Al volver a iniciar sesion, /api/token/ crea uno nuevo.
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def logout(request):
+    request.auth.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
