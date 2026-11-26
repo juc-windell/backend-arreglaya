@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'corsheaders',
     'usuarios',
     'espacios',
     'tecnicos',
@@ -52,6 +53,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # CorsMiddleware debe ir lo mas arriba posible (antes de CommonMiddleware)
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -108,6 +111,20 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 5,
 }
+
+
+# CORS (Proyecto 2)
+# El frontend React corre en otro origen (Vite usa http://localhost:5173),
+# por eso el navegador necesita que Django lo autorice.
+# Solo se permiten los origenes de la lista; se configuran en el .env
+CORS_ALLOWED_ORIGINS = [
+    origen.strip()
+    for origen in os.getenv(
+        "CORS_ALLOWED_ORIGINS",
+        "http://localhost:5173,http://127.0.0.1:5173"
+    ).split(",")
+    if origen.strip()
+]
 
 
 # Password validation

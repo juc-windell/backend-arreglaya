@@ -27,6 +27,10 @@ class EdificioSerializer(serializers.ModelSerializer):
 
 #===========================================================================================
 class EspacioSerializer(serializers.ModelSerializer):
+    # Proyecto 2: nombre del edificio (solo lectura) para mostrar la relacion
+    # en el listado del frontend sin una consulta extra por cada fila
+    edificio_nombre = serializers.CharField(source='edificio.nombre', read_only=True)
+
     class Meta:
         model = Espacio
         fields = '__all__'

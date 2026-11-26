@@ -81,7 +81,28 @@ def detalle_edificio(request, pk):
 @permission_classes([SoloAdministradorModifica])
 def api_espacios(request):
     if request.method == 'GET':
-        espacios = Espacio.objects.all().order_by('id')
+        espacios = Espacio.objects.select_related('edificio').order_by('id')
+
+        # Proyecto 2: filtros combinables ?edificio=<id> y ?tipo=<TIPO>
+        edificio = request.query_params.get('edificio')
+        if edificio:
+            if not edificio.isdigit():
+                return Response(
+                    {'edificio': 'Use el id numerico del edificio.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            espacios = espacios.filter(edificio_id=edificio)
+
+        tipo = request.query_params.get('tipo')
+        if tipo:
+            tipos_validos = [clave for clave, _ in Espacio.TIPOS]
+            if tipo.upper() not in tipos_validos:
+                return Response(
+                    {'tipo': 'Use uno de: ' + ', '.join(tipos_validos) + '.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            espacios = espacios.filter(tipo=tipo.upper())
+
         serializer = EspacioSerializer(espacios, many=True)
         return Response(serializer.data)
 
